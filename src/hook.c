@@ -27,13 +27,13 @@ int		key_move(int keycode, t_map *map)
 	if ((keycode >= 123 && keycode <= 126) || keycode == 69 || keycode == 78)
 	{
 		if (keycode == 126)
-			map->view_y -= 100;
+			map->start_y -= 100;
 		else if (keycode == 125)
-			map->view_y += 100;
+			map->start_y += 100;
 		else if (keycode == 124)
-			map->view_x += 100;
+			map->start_x += 100;
 		else if (keycode == 123)
-			map->view_x -= 100;
+			map->start_x -= 100;
 		else if (keycode == 69)
 			map->z++;
 		else if (keycode == 78)

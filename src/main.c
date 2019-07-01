@@ -19,9 +19,9 @@ t_map	init_map(t_map *map)
 	map->color = 0x00FFFFFF;
 	map->linesizex = 32;
 	map->linesizey = 16;
-	map->z = 2;
-	map->view_x = 400;
-	map->view_y = 400;
+	map->z = 20;
+	map->start_x = 400;
+	map->start_y = 400;
 	return (*map);
 }
 

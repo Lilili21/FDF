@@ -1,8 +1,15 @@
 #include "fdf.h"
 
-/*
-**	Positive case (dx > dy)
-*/
+void		draw_v(t_map *map, int x, int y)
+{
+	int	i;
+
+	i = (int)y * 4 + (int)x * map->start_x;
+
+	map->data[i] = map->color;
+	map->data[++i] = map->color >> 8;
+	map->data[++i] = map->color >> 16;
+}
 
 void	positive(t_map *map)
 {
@@ -20,14 +27,11 @@ void	positive(t_map *map)
 			err -= map->dx;
 			map->y1 += map->incry;
 		}
-		mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, map->color);
+		//draw_v(map, map->x1, map->y1);
+		mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, get_color(map, i));
 		i++;
 	}
 }
-
-/*
-**	Negative case (dx < dy)
-*/
 
 void	negative(t_map *map)
 {
@@ -45,16 +49,11 @@ void	negative(t_map *map)
 			err -= map->dy;
 			map->x1 += map->incrx;
 		}
-		mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, map->color);
+		//draw_v(map, map->x1, map->y1);
+		mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, get_color(map, i));
 		i++;
 	}
 }
-
-/*
-**	Bresenham Algorithm
-**	Define values of incr, in order to obtain direction coefficients.
-**	Then draw in function of results.
-*/
 
 void	pixels(t_map *map)
 {
@@ -70,7 +69,8 @@ void	pixels(t_map *map)
 	{
 		negative(map);
 	}
-	mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, map->color);
-	mlx_pixel_put(map->mlx, map->win, map->x2, map->y2, map->color);
-
+	//draw_v(map, map->x1, map->y1);
+	//draw_v(map, map->x2, map->y2);
+	mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, get_color(map, 0));
+	mlx_pixel_put(map->mlx, map->win, map->x2, map->y2, get_color(map, 0));
 }

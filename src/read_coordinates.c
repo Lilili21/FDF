@@ -92,6 +92,8 @@ t_map	work_coords(int fd, t_map *map)
 		error();
 	if (!(map->line = (int *)malloc((sizeof(int *) * (map->count_strings)))))
 		error();
+	//if (!(map->color = (unsigned long *)malloc(sizeof(unsigned long)*map->count_strings)))
+	//	error();
 	line = NULL;
 	i = 0;
 	while (get_next_line(fd, &line) == 1)
@@ -103,6 +105,7 @@ t_map	work_coords(int fd, t_map *map)
 				error();
 		if ((map->tab[i] = assign_all_coords(line, map->line[i])) == NULL)
 			error();
+		//map->color[i] = 0x00FFFFFF;
 		i++;
 		free(line);
 	}
