@@ -12,27 +12,18 @@
 
 #include "fdf.h"
 
-
-/*
-**	Gives basic parameters to struct
-*/
-
 t_map	init_map(t_map *map)
 {
 	map->height = 1200;
 	map->width = 1200;
 	map->color = 0x00FFFFFF;
-	map->linesizex = 32; // максимальная длинна изображения по х
-	map->linesizey = 16; // максимальная длинна изображения по y
-	map->z = 2; // максимальное длинна по z
-	map->view_x = 400; // первоначальное положение
+	map->linesizex = 32;
+	map->linesizey = 16;
+	map->z = 2;
+	map->view_x = 400;
 	map->view_y = 400;
 	return (*map);
 }
-
-/*
-**	Loop of draw & events
-*/
 
 void	ft_map(t_map *map)
 {
@@ -42,12 +33,7 @@ void	ft_map(t_map *map)
 	mlx_key_hook(map->win, key_pressed, map);
 	mlx_hook(map->win, 17, 0, &ft_close, NULL);
 	mlx_loop(map->mlx);
-
 }
-
-/*
-**	Main
-*/
 
 int		main(int argc, char **argv)
 {
@@ -59,7 +45,7 @@ int		main(int argc, char **argv)
 	if (!(fd = open(argv[1], O_RDONLY)))
 		return (error());
 	init_map(&map);
-	count_strings(fd, &map);
+	ft_str_count(fd, &map);
 	close(fd);
 	if (!(fd = open(argv[1], O_RDONLY)))
 		return (error());
@@ -67,8 +53,3 @@ int		main(int argc, char **argv)
 	ft_map(&map);
 	return (0);
 }
-
-/*
- * ps aux | grep fdf
- * leaks
- */

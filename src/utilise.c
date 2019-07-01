@@ -12,11 +12,44 @@
 
 #include "fdf.h"
 
-/*
-**	Print all (debug)
-*/
+void	ft_str_count(int fd, t_map *map)
+{
+	char	*line;
+	int		i;
 
-void	debugcoords(t_map map)
+	i = 0;
+	line = NULL;
+	while ((get_next_line(fd, &line)) == 1)
+	{
+		i++;
+		free(line);
+	}
+	map->count_strings = i;
+}
+
+int		ft_str_len(char **tab)
+{
+	int i;
+
+	i = 0;
+	while (tab[i] != NULL)
+		i++;
+	return (i);
+}
+
+int		error(void)
+{
+	ft_putstr_fd("error\n", 1);
+	return (-1);
+}
+
+int		usage(void)
+{
+	ft_putstr_fd("usage: fdf file\n", 2);
+	return (-1);
+}
+
+void	print_coords(t_map map)
 {
 	int i;
 	int j;
@@ -38,77 +71,4 @@ void	debugcoords(t_map map)
 		j = 0;
 		i++;
 	}
-}
-
-/*
-**	Error detect
-*/
-
-int		check_line(char **tab)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (tab[i] != NULL)
-	{
-		j = 0;
-		while (tab[i][j] != '\0')
-			if (tab[i][j] == '-')
-			{
-				j++;
-				while (tab[i][j] != '\0')
-				{
-					if (tab[i][j] < '0' || tab[i][j] > '9')
-						return (1);
-					j++;
-				}
-			}
-			else if (tab[i][j] >= '0' && tab[i][j] <= '9')
-				j++;
-			else
-				return (1);
-		i++;
-	}
-	return (0);
-}
-
-/*
-**	Error case
-*/
-
-int		exiterror(void)
-{
-	ft_putstr_fd("error\n", 1);
-	exit(-1);
-}
-
-int		error(void)
-{
-	ft_putstr_fd("error\n", 1);
-	return (-1);
-}
-
-/*
-**	Usage
-*/
-
-int		usage(void)
-{
-	ft_putstr_fd("usage: fdf file\n", 2);
-	return (-1);
-}
-
-/*
-**	Gives number of elements in a table of string.
-*/
-
-int		tablen(char **tab)
-{
-	int i;
-
-	i = 0;
-	while (tab[i] != NULL)
-		i++;
-	return (i);
 }
