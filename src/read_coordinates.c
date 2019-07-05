@@ -41,74 +41,75 @@ int		check_line(char **tab)
 	return (0);
 }
 
-int		*assign_all_coords(char *line, int l_size)
+void	assign_all_coords(t_str *str, char *line, int num_line)
 {
 	char	**tab;
 	int		i;
-	int		*cur_line;
+	int		j;
+	int 	size;
 
 	i = 0;
+	size = str->count_elems / str->count_strings;
 	tab = ft_strsplit(line, ' ');
-	if (!(cur_line = (int *)malloc(sizeof(int) * l_size)))
-		return (NULL);
-	while (tab[i] && (i < l_size))
+	j = num_line * size + i;
+	while (tab[i] && i < size)
 	{
-		cur_line[i] = ft_atoi(tab[i]);
+		str->xyz[j].x = str->prm.start_x + i * str->prm.linesizex;
+		str->xyz[j].y = str->prm.start_y + num_line * str->prm.linesizey;
+		str->xyz[j].z = ft_atoi(tab[i]);
+		//str->xyz[j].color = 0x00FFFFFF;
 		free(tab[i]);
 		i++;
+		j++;
 	}
 	free(tab);
-	return (cur_line);
 }
 
-int		determine_line(char *line, t_map *map, int j)
-{
-	int		i;
-	char	**tmp;
-
-	i = 0;
-	tmp = ft_strsplit(line, ' ');
-	if (check_line(tmp) == 1)
-	{
-		while(map->tab[i])
-			free(map->tab[i++]);
-		free(map->line);
-		free(tmp);
-		return (-1);
-	}
-	while (tmp[i])
-		i++;
-	map->line[j] = ft_str_len(tmp);
-	free(tmp);
-	return (i);
-}
-
-t_map	work_coords(int fd, t_map *map)
+void	work_coords(int fd, t_str *str)
 {
 	char	*line;
-	int		i;
+	int i;
 
-	if (!(map->tab = (int **)malloc(sizeof(int *) * (map->count_strings))))
+	if (!(str->xyz = (t_xyz *)malloc(sizeof(t_xyz) * (str->count_elems))))
 		error();
-	if (!(map->line = (int *)malloc((sizeof(int *) * (map->count_strings)))))
-		error();
-	//if (!(map->color = (unsigned long *)malloc(sizeof(unsigned long)*map->count_strings)))
-	//	error();
 	line = NULL;
 	i = 0;
 	while (get_next_line(fd, &line) == 1)
 	{
-		if ((determine_line(line, map, i)) == -1)
-			error();
-		if (i != 0)
-			if (map->line[i] != map->line[i - 1])
-				error();
-		if ((map->tab[i] = assign_all_coords(line, map->line[i])) == NULL)
-			error();
-		//map->color[i] = 0x00FFFFFF;
+		assign_all_coords(str, line, i);
 		i++;
 		free(line);
 	}
-	print_coords(*map);
-	return (*map);
+	//print_coords(*str);
+}
+
+int		ft_count(int fd, t_str *str)
+{
+	char	*line;
+	char	**tmp;
+	int		i;
+
+	i = 0;
+	line = NULL;
+
+	str->count_elems = 0;
+	str->count_strings = 0;
+	while ((get_next_line(fd, &line)) == 1)
+	{
+		i++;
+		tmp = ft_strsplit(line, ' ');
+		if (check_line(tmp) == 1 || ((str->count_elems + ft_str_len(tmp))/ i
+									  != ft_str_len(tmp)))
+		{
+			free(line);
+			free(tmp);
+			return (error());
+		}
+		str->count_elems += ft_str_len(tmp);
+		free(tmp);
+		free(line);
+	}
+	str->count_strings = i;
+	str->length = str->count_elems/str ->count_strings;
+	return (0);
 }

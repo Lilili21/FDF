@@ -12,21 +12,6 @@
 
 #include "fdf.h"
 
-void	ft_str_count(int fd, t_map *map)
-{
-	char	*line;
-	int		i;
-
-	i = 0;
-	line = NULL;
-	while ((get_next_line(fd, &line)) == 1)
-	{
-		i++;
-		free(line);
-	}
-	map->count_strings = i;
-}
-
 int		ft_str_len(char **tab)
 {
 	int i;
@@ -49,26 +34,39 @@ int		usage(void)
 	return (-1);
 }
 
-void	print_coords(t_map map)
+void	print_coords(t_str str)
 {
 	int i;
 	int j;
+	int elem_in_string;
+	int t;
 
 	i = 0;
 	j = 0;
-	while (i < map.count_strings)
+	t = 0;
+	elem_in_string = str.count_elems/str.count_strings;
+	while (j < str.count_elems)
 	{
 		ft_putstr("Ligne ");
-		ft_putnbr(i);
+		ft_putnbr(t);
 		ft_putstr(" : ");
-		while (j < map.line[i])
+		while (i < elem_in_string)
 		{
-			ft_putnbr(map.tab[i][j]);
+			ft_putnbr(str.xyz[j].x);
 			ft_putchar(' ');
 			j++;
+			i++;
 		}
 		ft_putstr("\n");
-		j = 0;
-		i++;
+		i = 0;
+		t++;
 	}
+}
+
+double		rad(float deg)
+{
+	double	radians;
+
+	radians = deg * PI / 180.0;
+	return (radians);
 }

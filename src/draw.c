@@ -1,81 +1,55 @@
 #include "fdf.h"
+#include <stdio.h>
 
-void	draw_all_x(t_map *map)
+void	draw_all_x(t_str *str, t_map *map)
 {
 	int i;
-	int turn;
 
 	i = 0;
-	turn = 0;
-	while (i < map->count_strings)
+	while(i < str->count_elems - 1)
 	{
-		while (turn < map->line[i] - 1)
-		{
-			map->x1 = map->start_x + (turn - i) * map->linesizex;
-			map->y1 = map->start_y + (turn + i) * map->linesizey
-			          - (map->tab[i][turn] * map->z);
-			map->x2 = map->start_x + ((turn + 1) - i) * map->linesizex;
-			map->y2 = map->start_y + ((turn + 1) + i) * map->linesizey
-			          - (map->tab[i][turn + 1] * map->z);
-			pixels(map);
-			turn++;
-		}
+		if ((i + 1) % str->length == 0)
+			i++;
+		pixels(str, map, i, i + 1);
 		i++;
-		turn = 0;
 	}
 }
 
-void	draw_all_y(t_map *map)
+void	draw_all_y(t_str *str, t_map *map)
 {
 	int i;
-	int turn;
 
 	i = 0;
-	turn = 0;
-	while (i < map->count_strings - 1)
+	printf("alfa = %f, betta = %f, gamma =%f\n", alfa, beta, gamma);
+	printf("cos_alfa = %f, cos_betta = %f, cos_gamma =%f\n", cos(alfa), cos(beta), cos(gamma));
+	printf("sin_alfa = %f, sin_betta = %f, sin_gamma =%f\n", sin(alfa), sin(beta), sin(gamma));
+	while(i < str->count_elems - str->length)
 	{
-		while (turn < map->line[i])
-		{
-			map->x1 = map->start_x + (turn - i) * map->linesizex;
-			map->y1 = map->start_y + (turn + i) * map->linesizey
-			          - (map->tab[i][turn] * map->z);
-			map->x2 = map->start_x + ((turn) - (i + 1)) * map->linesizex;
-			map->y2 = map->start_y + ((turn) + (i + 1)) * map->linesizey
-			          - (map->tab[i + 1][turn] * map->z);
-			pixels(map);
-			turn++;
-		}
+		pixels(str, map, i, i + str->length);
 		i++;
-		turn = 0;
 	}
+
 }
 
-void	draw(t_map *map)
+void	draw(t_str *str, t_map *map)
 {
-	int i;
-
-	i = 0;
-	map->img = mlx_new_image(map->mlx, 1000, 1200);
-	map->data = mlx_get_data_addr(map->img, &map->bp, &map->size, &map->endian);
 	mlx_string_put(map->mlx, map->win, 50, 50, 0x00FFFFFF, "+/- change level" );
 	mlx_string_put(map->mlx, map->win, 50, 70, 0x00FFFFFF, "<-||-> change position" );
 	mlx_string_put(map->mlx, map->win, 50, 90, 0x00FFFFFF, "Up/Down change size" );
-	while (i < 1000 * 1200)
-	{
-		map->data[i] = 0x0000FF00;
-		i++;
-	}
-//	draw_all_x(map);
-//	draw_all_y(map);
-	mlx_put_image_to_window(map->mlx, map->win, map->img, 0, 120);
+
+	map->img = mlx_new_image(map->mlx, map->width - 50, map->height - 130);
+	map->data = (int *)mlx_get_data_addr(map->img, &(map->trash), &(map->trash), &(map->trash));
+
+	draw_all_x(str, map);
+	draw_all_y(str, map);
+	mlx_put_image_to_window(map->mlx, map->win, map->img, 50 , 130);
 }
 
-unsigned long get_color(t_map *map, int i)
+unsigned long get_color(t_str *map, int i)
 {
 	return (0x00FFFFFF);
 	//if (map->x1 > map->start_x)
 	//	return(map->color[i] >> 16);
 	//return (map->color[i] >> 8);
-
 
 }

@@ -1,76 +1,98 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Bresenham.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gfoote <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/05 20:17:28 by gfoote            #+#    #+#             */
+/*   Updated: 2019/07/05 20:17:40 by gfoote           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
+#include <stdio.h>
 
-void		draw_v(t_map *map, int x, int y)
+void		draw_v(t_map *map, int x, int y, int color)
 {
-	int	i;
+	long int	cur_i;
 
-	i = (int)y * 4 + (int)x * map->start_x;
-
-	map->data[i] = map->color;
-	map->data[++i] = map->color >> 8;
-	map->data[++i] = map->color >> 16;
+	cur_i = x + y * (map->width - 50);
+	if (cur_i >= 0 && cur_i < (map->width - 50) * (map->height - 130))
+		map->data[cur_i] = color;
 }
 
-void	positive(t_map *map)
+void	horizontal(t_str *str, t_map *map)
 {
 	int err;
 	int i;
 
 	i = 0;
-	err = map->dx / 2;
-	while (i < map->dx)
+	err = str->prm.dx / 2;
+	while (i < str->prm.dx)
 	{
-		map->x1 += map->incrx;
-		err += map->dy;
-		if (err > map->dx)
+		str->x1 += str->prm.incrx;
+		err += str->prm.dy;
+		if (err > str->prm.dx)
 		{
-			err -= map->dx;
-			map->y1 += map->incry;
+			err -= str->prm.dx;
+			str->y1 += str->prm.incry;
 		}
-		//draw_v(map, map->x1, map->y1);
-		mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, get_color(map, i));
+		draw_v(map, str->x1, str->y1, 0x00FF00);
 		i++;
 	}
 }
 
-void	negative(t_map *map)
+void	incline(t_str *str, t_map *map)
 {
 	int err;
 	int i;
 
 	i = 0;
-	err = map->dy / 2;
-	while (i < map->dy)
+	err = str->prm.dy / 2;
+	while (i < str->prm.dy)
 	{
-		map->y1 += map->incry;
-		err += map->dx;
-		if (err > map->dy)
+		str->y1 += str->prm.incry;
+		err += str->prm.dx;
+		if (err >= str->prm.dy)
 		{
-			err -= map->dy;
-			map->x1 += map->incrx;
+			err -= str->prm.dy;
+			str->x1 += str->prm.incrx;
 		}
-		//draw_v(map, map->x1, map->y1);
-		mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, get_color(map, i));
+		draw_v(map, str->x1, str->y1, 0x00FFFF);
 		i++;
 	}
 }
 
-void	pixels(t_map *map)
+void	pixels(t_str *str, t_map *map, int i, int j)
 {
-	map->incrx = (map->x2 > map->x1) ? 1 : -1;
-	map->incry = (map->y2 > map->y1) ? 1 : -1;
-	map->dx = abs(map->x2 - map->x1);
-	map->dy = abs(map->y2 - map->y1);
-	if (map->dx > map->dy)
-	{
-		positive(map);
-	}
+	str->x1 = cos(beta)*cos(gamma)*str->xyz[i].x +
+				cos(beta)*sin(gamma)*str->xyz[i].y +
+				sin(beta)*str->xyz[i].z* str->prm.zoom;
+	str->y1 = (-sin(alfa)*sin(beta)*cos(gamma) -
+			 	cos(alfa)*sin(gamma)) * str->xyz[i].x +
+				(cos(alfa)*cos(gamma) -
+				sin(alfa)*sin(beta)*sin(gamma))*str->xyz[i].y +
+				sin(alfa)*cos(beta)*str->xyz[i].z * str->prm.zoom;
+	str->x2 = cos(beta)*cos(gamma)*str->xyz[j].x +
+				cos(beta)*sin(gamma)*str->xyz[j].y +
+				sin(beta)*str->xyz[j].z * str->prm.zoom;
+	str->y2 = (-sin(alfa)*sin(beta)*cos(gamma) -
+				cos(alfa)*sin(gamma)) * str->xyz[j].x +
+				(cos(alfa)*cos(gamma) -
+				sin(alfa)*sin(beta)*sin(gamma))*str->xyz[j].y +
+			  sin(alfa)*cos(beta)*str->xyz[j].z * str->prm.zoom;
+	str->prm.incrx = (str->x2 > str->x1) ? 1 : -1;
+	str->prm.incry = (str->y2 > str->y1) ? 1 : -1;
+	str->prm.dx = abs(str->x2 - str->x1);
+	str->prm.dy = abs(str->y2 - str->y1);
+	if (str->prm.dx > str->prm.dy)
+		horizontal(str, map);
 	else
-	{
-		negative(map);
-	}
-	//draw_v(map, map->x1, map->y1);
-	//draw_v(map, map->x2, map->y2);
-	mlx_pixel_put(map->mlx, map->win, map->x1, map->y1, get_color(map, 0));
-	mlx_pixel_put(map->mlx, map->win, map->x2, map->y2, get_color(map, 0));
+		incline(str, map);
+
+	printf("i = %i, j = %i, x1 = %i, y1 = %i, x2 = %i, y2 = %i\n", i, j, str->x1, str->y1, str->x2, str->y2);
+	draw_v(map, str->x1, str->y1, 0xFFFFFF);
+	draw_v(map, str->x2, str->y2, 0xFFFFFF);
+
 }

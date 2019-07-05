@@ -22,24 +22,24 @@ int ft_close(void *param)
 ** up, down, right, left, increase z +, decrease z -
 */
 
-int		key_move(int keycode, t_map *map)
+int		key_move(int keycode, t_str *str, t_map *map)
 {
 	if ((keycode >= 123 && keycode <= 126) || keycode == 69 || keycode == 78)
 	{
 		if (keycode == 126)
-			map->start_y -= 100;
+			str->prm.start_y -= 100;
 		else if (keycode == 125)
-			map->start_y += 100;
+			str->prm.start_y += 100;
 		else if (keycode == 124)
-			map->start_x += 100;
+			str->prm.start_x += 100;
 		else if (keycode == 123)
-			map->start_x -= 100;
+			str->prm.start_x -= 100;
 		else if (keycode == 69)
-			map->z++;
+			str->prm.zoom +=10;
 		else if (keycode == 78)
-			map->z--;
+			str->prm.zoom -= 10;
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map);
 	}
 	return (0);
 }
@@ -47,8 +47,8 @@ int		key_move(int keycode, t_map *map)
 /*
 **  Colors
 */
-
-int		key_color(int keycode, t_map *map)
+/*
+int		key_color(int keycode, t_str *map)
 {
 	if (keycode == 11)
 	{
@@ -70,12 +70,12 @@ int		key_color(int keycode, t_map *map)
 	}
 	return (0);
 }
-
+*/
 /*
 **  esc, delete, zoom home, zoom end
 */
 
-int		key_pressed(int keycode, t_map *map)
+int		key_pressed(int keycode, t_str *str, t_map *map)
 {
 	if (keycode == 53)
 	{
@@ -85,27 +85,27 @@ int		key_pressed(int keycode, t_map *map)
 	else if (keycode == 119 || keycode == 115 || keycode == 51)
 	{
 		if (keycode == 51)
-			init_map(map);
-		else if (keycode == 115)
+			init_str(str, map);
+		if (keycode == 115)
 		{
-			map->linesizex *= 2;
-			map->linesizey *= 2;
+			str->prm.linesizex *= 2;
+			str->prm.linesizey *= 2;
 		}
-		else if (map->linesizey > 1)
+		else if (str->prm.linesizey > 1)
 		{
-			map->linesizex /= 2;
-			map->linesizey /= 2;
+			str->prm.linesizex /= 2;
+			str->prm.linesizey /= 2;
 		}
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map);
 	}
-	key_move(keycode, map);
-	key_color(keycode, map);
+	//key_move(keycode, str, map);
+	//key_color(keycode, map);
 	return (0);
 }
 
 /*
-int mouse_pressed(int button, t_map *map)
+int mouse_pressed(int button, t_str *map)
 {
 	if (button == 4)
 	{
@@ -123,7 +123,7 @@ int mouse_pressed(int button, t_map *map)
 	}
 	if (button == 3)
 	{
-		init_map(map);
+		init_str(map);
 		mlx_clear_window(map->mlx, map->win);
 		draw(map);
 	}
