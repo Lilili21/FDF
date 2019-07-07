@@ -16,11 +16,10 @@ t_str	init_str(t_str *str, t_map *map)
 {
 	map->width = 1200;
 	map->height = 1200;
-	//str->prm = (t_prm *)malloc(sizeof(int)*8 + sizeof(double) + 1);
-	str->prm.start_x = 2000;
-	str->prm.start_y = 3000;
-	str->prm.linesizex = 400 / str->length;
-	str->prm.linesizey = 400 / str->length;
+	str->prm.start_x = 200;
+	str->prm.start_y = 200;
+	str->prm.linesizex = 16;
+	str->prm.linesizey = 16;
 	str->prm.zoom = 50;
 	return (*str);
 }
@@ -29,7 +28,8 @@ void	ft_str(t_str *str, t_map *map)
 {
 	map->mlx = mlx_init();
 	map->win = mlx_new_window(map->mlx, map->width, map->height, "FdF");
-	draw(str, map);
+	draw(str, map, 0);
+	mlx_mouse_hook(map->win, mouse_pressed, str);
 	mlx_key_hook(map->win, key_pressed, str);
 	mlx_hook(map->win, 17, 0, &ft_close, NULL);
 	mlx_loop(map->mlx);

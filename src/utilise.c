@@ -14,12 +14,12 @@
 
 int		ft_str_len(char **tab)
 {
-	int i;
+    int i;
 
-	i = 0;
-	while (tab[i] != NULL)
-		i++;
-	return (i);
+    i = 0;
+    while (tab[i] != NULL)
+        i++;
+    return (i);
 }
 
 int		error(void)
@@ -61,12 +61,4 @@ void	print_coords(t_str str)
 		i = 0;
 		t++;
 	}
-}
-
-double		rad(float deg)
-{
-	double	radians;
-
-	radians = deg * PI / 180.0;
-	return (radians);
 }

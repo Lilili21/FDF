@@ -17,8 +17,8 @@ void		draw_v(t_map *map, int x, int y, int color)
 {
 	long int	cur_i;
 
-	cur_i = x + y * (map->width - 50);
-	if (cur_i >= 0 && cur_i < (map->width - 50) * (map->height - 130))
+	cur_i = x + y * (map->width);
+	if (cur_i >= 0 && cur_i < map->width * map->height)
 		map->data[cur_i] = color;
 }
 

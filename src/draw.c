@@ -30,8 +30,31 @@ void	draw_all_y(t_str *str, t_map *map)
 	}
 
 }
+void ft_reinitialize(t_str *str)
+{
+	int i;
+	int delta;
 
-void	draw(t_str *str, t_map *map)
+	i = 0;
+	delta = 0;
+	if (str->prm.start_x != str->xyz[0].x) //стартовая точка поменялась
+		delta = str->prm.start_x - str->xyz[0].x;
+	else if (str->prm.linesizex != (str->xyz[1].x - str->xyz[0].x)) //ширина поменялась
+		delta = str->xyz[1].x - str->xyz[0].x;
+	if (delta != 0)
+		while(i < str->count_elems)
+			str->xyz[i++].x += delta;
+	delta = 0;
+	if (str->prm.start_y != str->xyz[0].y) //стартовая точка поменялась
+		delta = str->prm.start_y - str->xyz[0].y;
+	else if (str->prm.linesizey != (str->xyz[1].y - str->xyz[0].y)) //ширина поменялась
+		delta = str->xyz[1].y - str->xyz[0].y;
+	if (delta != 0)
+		while(i < str->count_elems)
+			str->xyz[i++].y += delta;
+}
+
+void	draw(t_str *str, t_map *map, int turn)
 {
 	mlx_string_put(map->mlx, map->win, 50, 50, 0x00FFFFFF, "+/- change level" );
 	mlx_string_put(map->mlx, map->win, 50, 70, 0x00FFFFFF, "<-||-> change position" );
@@ -39,17 +62,9 @@ void	draw(t_str *str, t_map *map)
 
 	map->img = mlx_new_image(map->mlx, map->width - 50, map->height - 130);
 	map->data = (int *)mlx_get_data_addr(map->img, &(map->trash), &(map->trash), &(map->trash));
-
+	if (turn != 0)
+		ft_reinitialize(str);
 	draw_all_x(str, map);
 	draw_all_y(str, map);
 	mlx_put_image_to_window(map->mlx, map->win, map->img, 50 , 130);
-}
-
-unsigned long get_color(t_str *map, int i)
-{
-	return (0x00FFFFFF);
-	//if (map->x1 > map->start_x)
-	//	return(map->color[i] >> 16);
-	//return (map->color[i] >> 8);
-
 }

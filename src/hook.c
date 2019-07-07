@@ -21,7 +21,6 @@ int ft_close(void *param)
 /*
 ** up, down, right, left, increase z +, decrease z -
 */
-
 int		key_move(int keycode, t_str *str, t_map *map)
 {
 	if ((keycode >= 123 && keycode <= 126) || keycode == 69 || keycode == 78)
@@ -39,44 +38,22 @@ int		key_move(int keycode, t_str *str, t_map *map)
 		else if (keycode == 78)
 			str->prm.zoom -= 10;
 		mlx_clear_window(map->mlx, map->win);
-		draw(str, map);
+		if(keycode == 69 || keycode == 78)
+			draw(str, map, 0);
+		else
+			draw(str, map, 1);
 	}
 	return (0);
 }
 
-/*
-**  Colors
-*/
-/*
-int		key_color(int keycode, t_str *map)
-{
-	if (keycode == 11)
-	{
-		map->color -= (0x00FFFFFF - 0x000000FF) / 255;
-		mlx_clear_window(map->mlx, map->win);
-		draw(map);
-	}
-	if (keycode == 15)
-	{
-		map->color -= (0x00FFFFFF - 0x00FF0000) / 255;
-		mlx_clear_window(map->mlx, map->win);
-		draw(map);
-	}
-	if (keycode == 5)
-	{
-		map->color -= (0x00FFFFFF - 0x0000FF00) / 255;
-		mlx_clear_window(map->mlx, map->win);
-		draw(map);
-	}
-	return (0);
-}
-*/
 /*
 **  esc, delete, zoom home, zoom end
 */
-
 int		key_pressed(int keycode, t_str *str, t_map *map)
 {
+	int turn;
+
+	turn = 0;
 	if (keycode == 53)
 	{
 		mlx_destroy_window(map->mlx, map->win);
@@ -88,57 +65,58 @@ int		key_pressed(int keycode, t_str *str, t_map *map)
 			init_str(str, map);
 		if (keycode == 115)
 		{
+			turn = 1;
 			str->prm.linesizex *= 2;
 			str->prm.linesizey *= 2;
 		}
 		else if (str->prm.linesizey > 1)
 		{
+			turn = 1;
 			str->prm.linesizex /= 2;
 			str->prm.linesizey /= 2;
 		}
 		mlx_clear_window(map->mlx, map->win);
-		draw(str, map);
+		draw(str, map, turn);
 	}
-	//key_move(keycode, str, map);
+	key_move(keycode, str, map);
 	//key_color(keycode, map);
 	return (0);
 }
 
-/*
-int mouse_pressed(int button, t_str *map)
+int mouse_pressed(int button, t_str *str, t_map *map)
 {
 	if (button == 4)
 	{
-		map->linesizex = map->linesizex * 2;
-		map->linesizey = map->linesizey * 2;
+		str->prm.linesizex /= 2;
+		str->prm.linesizey /= 2;
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map, 1);
 	}
 	if (button == 5)
 	{
-		map->linesizex = map->linesizex * 2;
-		map->linesizey = map->linesizey * 2;
+		str->prm.linesizex *= 2;
+		str->prm.linesizey *= 2;
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map, 1);
 	}
 	if (button == 3)
 	{
-		init_str(map);
+		init_str(str, map);
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map, 0);
 	}
 	if (button == 2)
 	{
-		map->z++;
+		str->prm.zoom++;
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map, 0);
 	}
 	if (button == 1)
 	{
-		map->z--;
+		str->prm.zoom++;
 		mlx_clear_window(map->mlx, map->win);
-		draw(map);
+		draw(str, map, 0);
 	}
 	return (0);
-}*/
+}
 

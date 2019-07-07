@@ -46,13 +46,11 @@ void	assign_all_coords(t_str *str, char *line, int num_line)
 	char	**tab;
 	int		i;
 	int		j;
-	int 	size;
 
 	i = 0;
-	size = str->count_elems / str->count_strings;
 	tab = ft_strsplit(line, ' ');
-	j = num_line * size + i;
-	while (tab[i] && i < size)
+	j = num_line * str->length + i;
+	while (tab[i] && i < str->length)
 	{
 		str->xyz[j].x = str->prm.start_x + i * str->prm.linesizex;
 		str->xyz[j].y = str->prm.start_y + num_line * str->prm.linesizey;
@@ -76,11 +74,17 @@ void	work_coords(int fd, t_str *str)
 	i = 0;
 	while (get_next_line(fd, &line) == 1)
 	{
-		assign_all_coords(str, line, i);
-		i++;
+		assign_all_coords(str, line, i++);
 		free(line);
 	}
-	//print_coords(*str);
+	print_coords(*str);
+}
+
+void	ft_clear(char *line, char **tmp)
+{
+    free(line);
+    ft_memdel(tmp);
+    free(tmp);
 }
 
 int		ft_count(int fd, t_str *str)
@@ -91,7 +95,6 @@ int		ft_count(int fd, t_str *str)
 
 	i = 0;
 	line = NULL;
-
 	str->count_elems = 0;
 	str->count_strings = 0;
 	while ((get_next_line(fd, &line)) == 1)
@@ -101,13 +104,11 @@ int		ft_count(int fd, t_str *str)
 		if (check_line(tmp) == 1 || ((str->count_elems + ft_str_len(tmp))/ i
 									  != ft_str_len(tmp)))
 		{
-			free(line);
-			free(tmp);
+            ft_clear(line, tmp);
 			return (error());
 		}
 		str->count_elems += ft_str_len(tmp);
-		free(tmp);
-		free(line);
+        ft_clear(line, tmp);
 	}
 	str->count_strings = i;
 	str->length = str->count_elems/str ->count_strings;
