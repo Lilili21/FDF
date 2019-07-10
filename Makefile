@@ -15,7 +15,7 @@ LIB_NAME = libft.a
 FLAGS = -Wall -Wextra -Werror -c -g
 HEADERS = ./includes
 HEADERS_FDF = /usr/local/include
-SRC = main.c utilise.c draw.c read_coordinates.c hook.c Bresenham.c
+SRC = main.c utilise.c draw.c read_coordinates.c hook.c Bresenham.c rotate.c
 SRCDIR = src
 SRCS = $(addprefix $(SRCDIR)/, $(SRC))
 OBJ = $(SRC:.c=.o)
@@ -45,7 +45,7 @@ $(NAME):
 	@mkdir -p $(OBJDIR);
 	@mv $(LIB_OBJ) $(OBJDIR)/
 	@ranlib $(LIB_NAME)
-	@0.0cc -I $(HEADERS) $(SRCS) -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit -L. -lft -o $(NAME)
+	@cc -I $(HEADERS) $(SRCS) -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit -L. -lft -o $(NAME)
 	@# cc -I /usr/local/include main.c -L /usr/local/lib/ -lmlx -framework OpenGL -framework AppKit -framework OpenCL(OpenCl подключить во fractal)
 
 clean:
