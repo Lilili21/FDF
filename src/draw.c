@@ -1,70 +1,54 @@
 #include "fdf.h"
 #include <stdio.h>
 
-void	draw_all_x(t_str *str, t_map *map)
-{
+
+void	centr(t_str *str, int turn) {
 	int i;
 
+	i = str->count_elems / 2;
+	rotate_x(str, i, 0);
+	rotate_y(str, i, 1);
+	rotate_z(str, i, 1);
+	if (turn == 0) {
+		str->delta_x = str->xyz_tmp[i].x - str->map.width_img / 2;
+		str->delta_y = str->xyz_tmp[i].y - str->map.height_img / 2;
+	}
+	else
+	{
+		str->delta_x = str->xyz_tmp[i].x - str->map.width_img / 2 - str->prm.start_x;
+		str->delta_y = str->xyz_tmp[i].y - str->map.height_img / 2 - str->prm.start_y;
+	}
+	printf("centr i = %i x = %d, y = %d\n", i, str->xyz_tmp[i].x, str->xyz_tmp[i].y);
+}
+
+
+void	draw(t_str *str, int turn)
+{
+	int i;
+	str->map.img = mlx_new_image(str->map.mlx, str->map.width_img, str->map.height_img);
+	str->map.data = (int *)mlx_get_data_addr(str->map.img, &(str->map.trash), &(str->map.trash), &(str->map.trash));
+	mlx_string_put(str->map.mlx, str->map.win, 50, 50, 0x00FFFFFF, "change level    + -" );
+	mlx_string_put(str->map.mlx, str->map.win, 50, 70, 0x00FFFFFF, "change position ^ v < >" );
+	mlx_string_put(str->map.mlx, str->map.win, 50, 90, 0x00FFFFFF, "change size     Up Down" );
+
+	if (turn != 0)
+		assign_xy(str);
 	i = 0;
+	if (!(str->xyz_tmp = (t_xyz2 *)malloc(sizeof(t_xyz2) * (str->count_elems))))
+		error();
+	centr(str, turn);
 	while(i < str->count_elems - 1)
 	{
 		if ((i + 1) % str->length == 0)
 			i++;
-		pixels(str, map, i, i + 1);
+		pixels(str, i, i + 1);
 		i++;
 	}
-}
-
-void	draw_all_y(t_str *str, t_map *map)
-{
-	int i;
-
 	i = 0;
-	printf("alfa = %f, betta = %f, gamma =%f\n", alfa, beta, gamma);
-	printf("cos_alfa = %f, cos_betta = %f, cos_gamma =%f\n", cos(alfa), cos(beta), cos(gamma));
-	printf("sin_alfa = %f, sin_betta = %f, sin_gamma =%f\n", sin(alfa), sin(beta), sin(gamma));
 	while(i < str->count_elems - str->length)
 	{
-		pixels(str, map, i, i + str->length);
+		pixels(str, i, i + str->length);
 		i++;
 	}
-
-}
-void ft_reinitialize(t_str *str)
-{
-	int i;
-	int delta;
-
-	i = 0;
-	delta = 0;
-	if (str->prm.start_x != str->xyz[0].x) //стартовая точка поменялась
-		delta = str->prm.start_x - str->xyz[0].x;
-	else if (str->prm.linesizex != (str->xyz[1].x - str->xyz[0].x)) //ширина поменялась
-		delta = str->xyz[1].x - str->xyz[0].x;
-	if (delta != 0)
-		while(i < str->count_elems)
-			str->xyz[i++].x += delta;
-	delta = 0;
-	if (str->prm.start_y != str->xyz[0].y) //стартовая точка поменялась
-		delta = str->prm.start_y - str->xyz[0].y;
-	else if (str->prm.linesizey != (str->xyz[1].y - str->xyz[0].y)) //ширина поменялась
-		delta = str->xyz[1].y - str->xyz[0].y;
-	if (delta != 0)
-		while(i < str->count_elems)
-			str->xyz[i++].y += delta;
-}
-
-void	draw(t_str *str, t_map *map, int turn)
-{
-	mlx_string_put(map->mlx, map->win, 50, 50, 0x00FFFFFF, "+/- change level" );
-	mlx_string_put(map->mlx, map->win, 50, 70, 0x00FFFFFF, "<-||-> change position" );
-	mlx_string_put(map->mlx, map->win, 50, 90, 0x00FFFFFF, "Up/Down change size" );
-
-	map->img = mlx_new_image(map->mlx, map->width - 50, map->height - 130);
-	map->data = (int *)mlx_get_data_addr(map->img, &(map->trash), &(map->trash), &(map->trash));
-	if (turn != 0)
-		ft_reinitialize(str);
-	draw_all_x(str, map);
-	draw_all_y(str, map);
-	mlx_put_image_to_window(map->mlx, map->win, map->img, 50 , 130);
+	mlx_put_image_to_window(str->map.mlx, str->map.win, str->map.img, 50 , 130);
 }

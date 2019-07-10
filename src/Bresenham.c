@@ -13,16 +13,17 @@
 #include "fdf.h"
 #include <stdio.h>
 
-void		draw_v(t_map *map, int x, int y, int color)
+void		draw_v(t_str *str, int x, int y, int color)
 {
 	long int	cur_i;
 
-	cur_i = x + y * (map->width);
-	if (cur_i >= 0 && cur_i < map->width * map->height)
-		map->data[cur_i] = color;
+	cur_i = x + y * (str->map.width_img);
+	if (x < str->map.width_img && y < str->map.height_img && x >0 && y > 0
+	&& cur_i >= 0 && cur_i < (str->map.width_img) * (str->map.height_img))
+		str->map.data[cur_i] = color;
 }
 
-void	horizontal(t_str *str, t_map *map)
+void	horizontal(t_str *str, int k)
 {
 	int err;
 	int i;
@@ -31,19 +32,22 @@ void	horizontal(t_str *str, t_map *map)
 	err = str->prm.dx / 2;
 	while (i < str->prm.dx)
 	{
-		str->x1 += str->prm.incrx;
+		str->xyz_tmp[k].x += str->prm.incrx;
 		err += str->prm.dy;
 		if (err > str->prm.dx)
 		{
 			err -= str->prm.dx;
-			str->y1 += str->prm.incry;
+			str->xyz_tmp[k].y += str->prm.incry;
 		}
-		draw_v(map, str->x1, str->y1, 0x00FF00);
+		if (k == str->count_elems / 2)
+			draw_v(str, str->xyz_tmp[k].x, str->xyz_tmp[k].y, 0x0000FF);
+		else
+			draw_v(str, str->xyz_tmp[k].x, str->xyz_tmp[k].y, 0xFF0000);
 		i++;
 	}
 }
 
-void	incline(t_str *str, t_map *map)
+void	incline(t_str *str, int k)
 {
 	int err;
 	int i;
@@ -52,47 +56,49 @@ void	incline(t_str *str, t_map *map)
 	err = str->prm.dy / 2;
 	while (i < str->prm.dy)
 	{
-		str->y1 += str->prm.incry;
+		str->xyz_tmp[k].y += str->prm.incry;
 		err += str->prm.dx;
 		if (err >= str->prm.dy)
 		{
 			err -= str->prm.dy;
-			str->x1 += str->prm.incrx;
+			str->xyz_tmp[k].x += str->prm.incrx;
 		}
-		draw_v(map, str->x1, str->y1, 0x00FFFF);
+		if (k == str->count_elems / 2)
+			draw_v(str, str->xyz_tmp[k].x, str->xyz_tmp[k].y, 0x0000FF);
+		else
+			draw_v(str, str->xyz_tmp[k].x, str->xyz_tmp[k].y, 0xFF0000);
 		i++;
 	}
 }
 
-void	pixels(t_str *str, t_map *map, int i, int j)
+void	normalize(t_str *str, int i)
 {
-	str->x1 = cos(beta)*cos(gamma)*str->xyz[i].x +
-				cos(beta)*sin(gamma)*str->xyz[i].y +
-				sin(beta)*str->xyz[i].z* str->prm.zoom;
-	str->y1 = (-sin(alfa)*sin(beta)*cos(gamma) -
-			 	cos(alfa)*sin(gamma)) * str->xyz[i].x +
-				(cos(alfa)*cos(gamma) -
-				sin(alfa)*sin(beta)*sin(gamma))*str->xyz[i].y +
-				sin(alfa)*cos(beta)*str->xyz[i].z * str->prm.zoom;
-	str->x2 = cos(beta)*cos(gamma)*str->xyz[j].x +
-				cos(beta)*sin(gamma)*str->xyz[j].y +
-				sin(beta)*str->xyz[j].z * str->prm.zoom;
-	str->y2 = (-sin(alfa)*sin(beta)*cos(gamma) -
-				cos(alfa)*sin(gamma)) * str->xyz[j].x +
-				(cos(alfa)*cos(gamma) -
-				sin(alfa)*sin(beta)*sin(gamma))*str->xyz[j].y +
-			  sin(alfa)*cos(beta)*str->xyz[j].z * str->prm.zoom;
-	str->prm.incrx = (str->x2 > str->x1) ? 1 : -1;
-	str->prm.incry = (str->y2 > str->y1) ? 1 : -1;
-	str->prm.dx = abs(str->x2 - str->x1);
-	str->prm.dy = abs(str->y2 - str->y1);
-	if (str->prm.dx > str->prm.dy)
-		horizontal(str, map);
-	else
-		incline(str, map);
-
-	printf("i = %i, j = %i, x1 = %i, y1 = %i, x2 = %i, y2 = %i\n", i, j, str->x1, str->y1, str->x2, str->y2);
-	draw_v(map, str->x1, str->y1, 0xFFFFFF);
-	draw_v(map, str->x2, str->y2, 0xFFFFFF);
-
+	str->xyz_tmp[i].x -= str->delta_x;
+	str->xyz_tmp[i].y -= str->delta_y;
 }
+
+void	pixels(t_str *str, int i, int j) {
+	rotate_x(str, i, 0);
+	rotate_x(str, j, 0);
+	rotate_y(str, i, 1);
+	rotate_y(str, j, 1);
+	rotate_z(str, i, 1);
+	rotate_z(str, j, 1);
+	normalize(str, i);
+	normalize(str, j);
+
+	str->prm.incrx = (str->xyz_tmp[j].x > str->xyz_tmp[i].x) ? 1 : -1;
+	str->prm.incry = (str->xyz_tmp[j].y > str->xyz_tmp[i].y) ? 1 : -1;
+	str->prm.dx = abs(str->xyz_tmp[j].x - str->xyz_tmp[i].x);
+	str->prm.dy = abs(str->xyz_tmp[j].y - str->xyz_tmp[i].y);
+	if (str->prm.dx > str->prm.dy)
+		horizontal(str, i);
+	else
+		incline(str, i);
+	//printf("i = %i, j = %i, x1 = %i, y1 = %i, x2 = %i, y2 = %i\n", i, j, str->xyz_tmp[i].x, str->xyz_tmp[i].y, str->xyz_tmp[j].x, str->xyz_tmp[j].y);
+	//if (i == str->count_elems / 2)
+	//	draw_v(str, str->xyz_tmp[i].x, str->xyz_tmp[i].y, 0x0000FF);
+	}
+
+
+

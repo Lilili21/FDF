@@ -41,7 +41,7 @@ int		check_line(char **tab)
 	return (0);
 }
 
-void	assign_all_coords(t_str *str, char *line, int num_line)
+void	assign_z(t_str *str, char *line, int num_line)
 {
 	char	**tab;
 	int		i;
@@ -52,8 +52,6 @@ void	assign_all_coords(t_str *str, char *line, int num_line)
 	j = num_line * str->length + i;
 	while (tab[i] && i < str->length)
 	{
-		str->xyz[j].x = str->prm.start_x + i * str->prm.linesizex;
-		str->xyz[j].y = str->prm.start_y + num_line * str->prm.linesizey;
 		str->xyz[j].z = ft_atoi(tab[i]);
 		//str->xyz[j].color = 0x00FFFFFF;
 		free(tab[i]);
@@ -61,6 +59,27 @@ void	assign_all_coords(t_str *str, char *line, int num_line)
 		j++;
 	}
 	free(tab);
+}
+
+void	assign_xy(t_str *str)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+
+	while (j < str->count_elems) {
+		i++;
+		str->xyz[j].x = 0;
+		str->xyz[j].y = (i - 1) * (str->prm.linesizey);
+		j++;
+		while (j < str->length * i) {
+			str->xyz[j].x = str->xyz[j-1].x + str->prm.linesizex;
+			str->xyz[j].y = str->xyz[j-1].y;
+			j++;
+		}
+	}
 }
 
 void	work_coords(int fd, t_str *str)
@@ -74,16 +93,17 @@ void	work_coords(int fd, t_str *str)
 	i = 0;
 	while (get_next_line(fd, &line) == 1)
 	{
-		assign_all_coords(str, line, i++);
+		assign_z(str, line, i++);
 		free(line);
 	}
+	assign_xy(str);
 	print_coords(*str);
 }
 
 void	ft_clear(char *line, char **tmp)
 {
     free(line);
-    ft_memdel(tmp);
+    ft_strdel(tmp);
     free(tmp);
 }
 
@@ -111,6 +131,8 @@ int		ft_count(int fd, t_str *str)
         ft_clear(line, tmp);
 	}
 	str->count_strings = i;
+	if (str->count_strings == 0)
+		return (error());
 	str->length = str->count_elems/str ->count_strings;
 	return (0);
 }
