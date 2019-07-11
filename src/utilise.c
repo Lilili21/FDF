@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gfoote <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/19 18:54:37 by gfoote            #+#    #+#             */
-/*   Updated: 2019/06/19 18:54:45 by gfoote           ###   ########.fr       */
+/*   Created: 2019/07/11 13:34:26 by gfoote            #+#    #+#             */
+/*   Updated: 2019/07/11 13:37:34 by gfoote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 int		ft_str_len(char **tab)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while (tab[i] != NULL)
-        i++;
-    return (i);
+	i = 0;
+	while (tab[i] != NULL)
+		i++;
+	return (i);
 }
 
 int		error(void)
@@ -34,6 +34,35 @@ int		usage(void)
 	return (-1);
 }
 
+int		check_line(char **tab)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (tab[i] != NULL)
+	{
+		j = 0;
+		while (tab[i][j] != '\0')
+			if (tab[i][j] == '-')
+			{
+				j++;
+				while (tab[i][j] != '\0')
+				{
+					if (tab[i][j] < '0' || tab[i][j] > '9')
+						return (1);
+					j++;
+				}
+			}
+			else if (tab[i][j] >= '0' && tab[i][j] <= '9')
+				j++;
+			else
+				return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	print_coords(t_str str)
 {
 	int i;
@@ -44,7 +73,7 @@ void	print_coords(t_str str)
 	i = 0;
 	j = 0;
 	t = 0;
-	elem_in_string = str.count_elems/str.count_strings;
+	elem_in_string = str.count_elems / str.count_strings;
 	while (j < str.count_elems)
 	{
 		ft_putstr("Ligne ");
@@ -52,7 +81,7 @@ void	print_coords(t_str str)
 		ft_putstr(" : ");
 		while (i < elem_in_string)
 		{
-			ft_putnbr(str.xyz[j].x);
+			ft_putnbr(str.xyz[j].z);
 			ft_putchar(' ');
 			j++;
 			i++;
