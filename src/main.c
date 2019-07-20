@@ -14,8 +14,9 @@
 
 t_str		init_str(t_str *str)
 {
-	str->map.width = 1200;
-	str->map.height = 1200;
+	str->iso = 0;
+	str->map.width = 2400;
+	str->map.height = 1700;
 	str->map.width_img = str->map.width - 50;
 	str->map.height_img = str->map.height - 150;
 	str->prm.move_y = 0;
@@ -28,7 +29,9 @@ t_str		init_str(t_str *str)
 		str->prm.linesizex /= 2;
 		str->prm.linesizey /= 2;
 	}
-	str->prm.zoom = 10;
+	str->x_center = str->length * str->prm.linesizex / 2;
+	str->y_center = str->count_strings * str->prm.linesizey / 2;
+	str->prm.zoom = 2;
 	str->x_alfa = 0.00;
 	str->y_alfa = 0.00;
 	str->z_alfa = 0.00;
@@ -53,9 +56,9 @@ int			main(int argc, char **argv)
 	int		fd;
 
 	if (argc != 2)
-		return (usage());
+		return (whoops(2));
 	if (!(fd = open(argv[1], O_RDONLY)))
-		return (error());
+		return (whoops(1));
 	if (ft_count(fd, &str) == -1)
 	{
 		close(fd);
@@ -64,7 +67,7 @@ int			main(int argc, char **argv)
 	close(fd);
 	init_str(&str);
 	if (!(fd = open(argv[1], O_RDONLY)))
-		return (error());
+		return (whoops(1));
 	work_coords(fd, &str);
 	close(fd);
 	draw_str(str);

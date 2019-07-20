@@ -23,9 +23,19 @@ void	assign_z(t_str *str, char *line, int num_line)
 	j = num_line * str->length + i;
 	while (tab[i] && i < str->length)
 	{
-		str->xyz[j].z = ft_atoi(tab[i]);
-		free(tab[i]);
-		i++;
+		if (ft_strchsymb(tab[i], ',') == 0)
+		{
+			str->xyz[j].z = ft_atoi(tab[i]);
+			str->xyz[j].color = 0x000000;
+		}
+		else
+		{
+			str->xyz[j].z = ft_atoi(tab[i]);
+			str->xyz[j].color = ft_get_color(tab[i]);
+		}
+		free(tab[i++]);
+		str->min_z = (str->min_z <= str->xyz[j].z) ? str->min_z : str->xyz[j].z;
+		str->max_z = (str->max_z >= str->xyz[j].z) ? str->max_z : str->xyz[j].z;
 		j++;
 	}
 	free(tab);
@@ -59,16 +69,17 @@ void	work_coords(int fd, t_str *str)
 	int		i;
 
 	if (!(str->xyz = (t_xyz *)malloc(sizeof(t_xyz) * (str->count_elems))))
-		error();
+		whoops(1);
 	line = NULL;
 	i = 0;
+	str->max_z = 0;
+	str->min_z = 0;
 	while (get_next_line(fd, &line) == 1)
 	{
 		assign_z(str, line, i++);
 		free(line);
 	}
 	assign_xy(str);
-	print_coords(*str);
 }
 
 void	ft_clear(char *line, char **tmp)
@@ -99,14 +110,14 @@ int		ft_count(int fd, t_str *str)
 				((str->count_elems + ft_str_len(tmp)) / i != ft_str_len(tmp)))
 		{
 			ft_clear(line, tmp);
-			return (error());
+			return (whoops(1));
 		}
 		str->count_elems += ft_str_len(tmp);
 		ft_clear(line, tmp);
 	}
 	str->count_strings = i;
 	if (str->count_strings == 0)
-		return (error());
+		return (whoops(1));
 	str->length = str->count_elems / str->count_strings;
 	return (0);
 }

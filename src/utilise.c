@@ -22,16 +22,32 @@ int		ft_str_len(char **tab)
 	return (i);
 }
 
-int		error(void)
+int		whoops(int i)
 {
-	ft_putstr_fd("error\n", 1);
+	if (i == 1)
+		ft_putstr_fd("error\n", 1);
+	else
+		ft_putstr_fd("usage: fdf file\n", 2);
 	return (-1);
 }
 
-int		usage(void)
+int		ft_checkt(char *tab, int j)
 {
-	ft_putstr_fd("usage: fdf file\n", 2);
-	return (-1);
+	j++;
+	while (tab[j] != '\0')
+	{
+		if (j > 0 && tab[j] == ',')
+		{
+			if (check_l_color(tab, j) == 1)
+				return (1);
+			else
+				j = check_l_color(tab, j);
+		}
+		else if (tab[j] < '0' || tab[j] > '9')
+			return (1);
+		j++;
+	}
+	return (j);
 }
 
 int		check_line(char **tab)
@@ -44,20 +60,20 @@ int		check_line(char **tab)
 	{
 		j = 0;
 		while (tab[i][j] != '\0')
-			if (tab[i][j] == '-')
-			{
-				j++;
-				while (tab[i][j] != '\0')
-				{
-					if (tab[i][j] < '0' || tab[i][j] > '9')
-						return (1);
-					j++;
-				}
-			}
+		{
+			if (tab[i][j] == '-' && ft_checkt(tab[i], j) == 1)
+				return (1);
+			else if (tab[i][j] == '-' && ft_checkt(tab[i], j) != 1)
+				j = ft_checkt(tab[i], j);
 			else if (tab[i][j] >= '0' && tab[i][j] <= '9')
 				j++;
+			else if (j > 0 && tab[i][j] == ',' && check_l_color(tab[i], j) == 1)
+				return (1);
+			else if (j > 0 && tab[i][j] == ',' && check_l_color(tab[i], j) != 1)
+				j = check_l_color(tab[i], j);
 			else
 				return (1);
+		}
 		i++;
 	}
 	return (0);
@@ -81,7 +97,7 @@ void	print_coords(t_str str)
 		ft_putstr(" : ");
 		while (i < elem_in_string)
 		{
-			ft_putnbr(str.xyz[j].z);
+			ft_putnbr((int)str.xyz[j].z);
 			ft_putchar(' ');
 			j++;
 			i++;

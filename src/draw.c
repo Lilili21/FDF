@@ -34,12 +34,22 @@ void	draw_commands(t_str *str)
 			"change level    ^ Scroll v ");
 	mlx_string_put(str->map.mlx, str->map.win, 350, 50, 0x00FFFFFF,
 			"change size     > Click < ");
+	mlx_string_put(str->map.mlx, str->map.win, 700, 50, 0x00FFFFFF,
+			"Show Iso projection: i");
+	mlx_string_put(str->map.mlx, str->map.win, 700, 30, 0x00FFFFFF,
+			"Basic settings: esc");
 }
 
 void	draw_cycle(t_str *str)
 {
 	int i;
 
+	i = 0;
+	while (i < str->count_elems)
+	{
+		str->xyz_tmp[i].color = get_basic_color(str, i);
+		i++;
+	}
 	i = 0;
 	while (i < str->count_elems - 1)
 	{
@@ -66,7 +76,7 @@ void	draw(t_str *str, int turn)
 	if (turn != 0)
 		assign_xy(str);
 	if (!(str->xyz_tmp = (t_xyz *)malloc(sizeof(t_xyz) * (str->count_elems))))
-		error();
+		whoops(1);
 	find_centr(str);
 	draw_cycle(str);
 	free(str->xyz_tmp);
