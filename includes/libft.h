@@ -18,7 +18,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-# define BUFF_SIZE 1
+# define BUFF_SIZE 1000000
 
 typedef struct		s_list
 {
@@ -89,4 +89,6 @@ void				ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 t_list				*ft_lstnew(void const *content, size_t content_size);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 int					get_next_line(const int fd, char **line);
+int					ft_strchsymb(char *str, char a);
+int					ft_atoi_base(const char *str, int str_base);
 #endif

@@ -18,7 +18,6 @@
 # include "mlx.h"
 # include <stdlib.h>
 # include <fcntl.h>
-#include <MacTypes.h>
 
 typedef struct	s_prm
 {
@@ -38,6 +37,7 @@ typedef struct	s_xyz
 	double		x;
 	double		y;
 	double		z;
+	int			color;
 }				t_xyz;
 
 typedef struct	s_map
@@ -67,6 +67,11 @@ typedef struct	s_str
 	double		x_alfa;
 	double		y_alfa;
 	double		z_alfa;
+	int			x_center;
+	int			y_center;
+	double		min_z;
+	double		max_z;
+	int			iso;
 }				t_str;
 
 t_str			init_str(t_str *str);
@@ -75,16 +80,17 @@ void			work_coords(int fd, t_str *str);
 void			assign_xy(t_str *str);
 int				ft_str_len(char **tab);
 void			print_coords(t_str str);
-int				error(void);
-int				usage(void);
+int				whoops(int i);
 int				check_line(char **tab);
 void			draw_img(t_str *str, int i, int j);
 int				mouse_pressed(int button, int x, int y, t_str *str);
 int				key_pressed(int keycode, t_str *str);
 int				ft_close(void *param);
 void			draw(t_str *str, int turn);
+int				check_l_color(char *tab, int j);
+int				ft_get_color(char *str);
+int				get_basic_color(t_str *str, int i);
 void			rotate(t_str *str, int i);
 void			find_centr(t_str *str);
 void			normalize(t_str *str, int i);
-
 #endif
