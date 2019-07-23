@@ -59,7 +59,7 @@ int			get_next_line(const int fd, char **line)
 	int			ret;
 
 	if (fd < 0 || line == NULL || fd >= 12000 || read(fd, buf, 0) < 0 ||
-	BUFF_SIZE <= 0 )
+	BUFF_SIZE <= 0)
 		return (-1);
 	if (s[fd] == NULL)
 		s[fd] = ft_strnew(1);
