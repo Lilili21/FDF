@@ -25,7 +25,7 @@ int		ft_str_len(char **tab)
 int		whoops(int i)
 {
 	if (i == 1)
-		ft_putstr_fd("error\n", 1);
+		ft_putstr_fd("error\n", 2);
 	else
 		ft_putstr_fd("usage: fdf file\n", 2);
 	return (-1);

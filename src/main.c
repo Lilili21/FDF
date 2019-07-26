@@ -57,9 +57,11 @@ int			main(int argc, char **argv)
 
 	if (argc != 2)
 		return (whoops(2));
-	if (!(fd = open(argv[1], O_RDONLY)))
-		return (whoops(1));
-	if (ft_count(fd, &str) == -1)
+	if (!(fd = open(argv[1], O_RDONLY))) {
+        write(1, "whoops", 6);
+        return (whoops(1));
+    }
+		if (ft_count(fd, &str) == -1)
 	{
 		close(fd);
 		return (-1);

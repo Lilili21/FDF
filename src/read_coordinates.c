@@ -117,7 +117,7 @@ int		ft_count(int fd, t_str *str)
 	}
 	str->count_strings = i;
 	if (str->count_strings == 0)
-		return (whoops(1));
+		return (whoops(2));
 	str->length = str->count_elems / str->count_strings;
 	return (0);
 }
