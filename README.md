@@ -10,8 +10,7 @@ Examples:
   - Fractal Julia
 ![julia](https://raw.githubusercontent.com/Lilili21/FDF/master/img/julia.png)
   - Pylone
-![pylone](https://raw.githubusercontent.com/Lilili21/FDF/master/img/pylone.png)
-![pylone2](https://raw.githubusercontent.com/Lilili21/FDF/master/img/pylone_rotated.png)
+![pylone](https://github.com/Lilili21/FDF/blob/master/img/pylone.gif)
   - Pyramide
 ![pyramide](https://raw.githubusercontent.com/Lilili21/FDF/master/img/pyramide.png)
 ![pyramide2](https://raw.githubusercontent.com/Lilili21/FDF/master/img/pyramide_rotated.png)
