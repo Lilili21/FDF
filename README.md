@@ -12,5 +12,4 @@ Examples:
   - Pylone
 ![pylone](https://github.com/Lilili21/FDF/blob/master/img/pylone.gif)
   - Pyramide
-![pyramide](https://raw.githubusercontent.com/Lilili21/FDF/master/img/pyramide.png)
-![pyramide2](https://raw.githubusercontent.com/Lilili21/FDF/master/img/pyramide_rotated.png)
+![pyramide](https://github.com/Lilili21/FDF/blob/master/img/pyramide.gif)
