@@ -6,7 +6,7 @@
 /*   By: gfoote <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/11 12:49:17 by gfoote            #+#    #+#             */
-/*   Updated: 2019/07/11 12:49:35 by gfoote           ###   ########.fr       */
+/*   Updated: 2019/09/26 14:40:25 by gfoote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,12 @@ int			main(int argc, char **argv)
 
 	if (argc != 2)
 		return (whoops(2));
-	if (!(fd = open(argv[1], O_RDONLY))) {
-        write(1, "whoops", 6);
-        return (whoops(1));
-    }
-		if (ft_count(fd, &str) == -1)
+	if (!(fd = open(argv[1], O_RDONLY)))
+	{
+		write(1, "whoops", 6);
+		return (whoops(1));
+	}
+	if (ft_count(fd, &str) == -1)
 	{
 		close(fd);
 		return (-1);

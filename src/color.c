@@ -6,12 +6,11 @@
 /*   By: gfoote <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/15 16:35:45 by gfoote            #+#    #+#             */
-/*   Updated: 2019/07/23 11:23:23 by gfoote           ###   ########.fr       */
+/*   Updated: 2019/09/26 14:37:58 by gfoote           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include <stdio.h>
 
 int		check_l_color(char *tab, int j)
 {
@@ -38,24 +37,6 @@ int		check_l_color(char *tab, int j)
 	}
 	return (j);
 }
-/*
-int percent(double curr, t_str *str)
-{
-	int Blue = 0x0000FF;
-	int Green = 0x00FF00;
-
-	double percentage;
-	double percentage1;
-
-	percentage = curr / str->max_z;
-	percentage1 = curr / str->min_z;
-	if (percentage1 == 1)
-		return Blue;
-	else if (percentage1 > 1 && percentage < 1)
-		return
-
-
-}*/
 
 int		get_basic_color(t_str *str, int i)
 {
@@ -73,8 +54,6 @@ int		get_basic_color(t_str *str, int i)
 			return (0xFFA500);
 	}
 	return (str->xyz[i].color);
-	//printf("color = %i\n", percent(str->xyz[i].z, str));
-	 //(percent(str->xyz[i].z, str));
 }
 
 int		ft_get_color(char *str)
@@ -90,4 +69,3 @@ int		ft_get_color(char *str)
 	result_t = ft_atoi_base(result, 16);
 	return (result_t);
 }
-
